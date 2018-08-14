@@ -1,0 +1,7 @@
+ID,速度,弹道,高度,粒子效果,命中粒子效果,预制物体
+index,int,int,int,int,int,string
+id,speed,path,high,particle,hit_particle,bullet_prefab
+1,10,1,0,1,1,Bullet/Bullet1
+2,15,1,0,2,2,Bullet/Bullet1
+3,8,2,8,3,3,Bullet/Bullet1
+4,10,2,8,4,4,Bullet/Bullet1

@@ -1,0 +1,121 @@
+syntax="proto2";
+
+package battle_msg;
+
+////////////////////////////////////////////////////////////////////////////////////////
+message vector {
+	required float x = 1;
+	required float y = 2;
+	required float z = 3;
+}
+
+message entity_info {
+	required int32 id = 1;
+	required int32 type_id = 2;
+	required int32 camp = 3;
+	required int32 blood = 4;
+	required float cd = 5;
+	required int32 row = 6;
+	required int32 col = 7;
+	required vector pos = 8;
+}
+
+message bullet_info {
+	required int32 id = 1;
+	required int32 type_id = 2;
+	required int32 camp = 3;
+	required int32 damage = 4;
+	required int32 path = 5;
+	required vector begin_pos = 6;
+	required vector pos = 7;
+	required vector begin_speed = 8;
+	required vector speed = 9;
+	required double begin_time = 10;
+}
+
+message room_info {
+	required int32 state = 1;
+	required double begin_time = 2;
+	required double now_time = 3;
+}
+
+message update_state {
+	required int32 state = 1;
+	required int32 id = 2;
+	optional float p1 = 3;
+	optional float p2 = 4;
+	optional float p3 = 5;
+}
+
+////////////////////////////////////////////////////////////////////////////////////////
+message c_login_hall {
+	required int64 uid = 1;
+	required string password = 2;
+}
+
+message s_login_hall {
+	required string res = 1;
+	optional int64 uid = 2;
+	optional string name = 3;
+	optional string icon = 4;
+}
+
+message c_login {
+	required int64 uid = 1;
+}
+
+message s_login {
+	required string res = 1;
+	optional int64 uid = 2;
+	optional string name = 3;
+	optional string icon = 4;
+	optional int32 camp = 5;
+}
+
+message c_get_room_info {
+	
+}
+
+message s_get_room_info {
+	required string res = 1;
+	required room_info info = 2;
+	repeated entity_info entitys = 3;
+	repeated bullet_info bullets = 4;
+}
+
+message c_create_entity {
+	required int32 type_id = 1;
+	required int32 row = 2;
+	required int32 col = 3;
+}
+
+////////////////////////////////////////////////////////////////////////////////////////
+message s_room_state {
+	//required int32 state = 1;
+	required room_info info = 1;
+}
+
+message s_create_entity {
+	required entity_info einfo = 1;
+	required int32 use_gold = 2;
+	required int32 cur_gold = 3;
+}
+
+message s_destroy_entity {
+	required int32 eid = 1;
+}
+
+message s_fire {
+	required int32 eid = 1;
+	required bullet_info binfo = 2;
+}
+
+message s_collision {
+	required entity_info einfo = 1;
+	required bullet_info binfo = 2;
+	required bool bullet_destroy = 3;
+}
+
+message s_update_state {
+	repeated update_state states = 1;
+}

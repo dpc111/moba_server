@@ -1,0 +1,86 @@
+########################################################################################
+#	一 、 操作系统及shell相关
+########################################################################################
+#指定SHELL ,SHELL := /bin/sh ,或者使用当前SHELL设置
+#SHELL := /bin/bash
+
+#取得操作系统名称#OS_NAME="Linux:SunOS:HP-UX:AIX"
+OS_NAME := $(shell uname -s)
+AR := ar
+SED := sed
+AWK := awk
+MV := mv
+RM := rm -f
+ECHO := echo
+CP := cp
+
+#########################################################################################
+#	二 、C编译器选项
+#########################################################################################
+# 指定C编译器,如gcc编译器
+# CC := gcc
+
+#CFLAGS,C语言编译器参数,编译时使用。
+CFLAGS := -c -g -W -Wall
+
+#CPP,C预编译器的名称,默认值为 $(CC) -E。
+#CPP :=
+
+#CPPFLAGS C 预编译的选项。
+#CPPFLAGS :=
+
+########################################################################################
+#	三 、C++编译器选项
+########################################################################################
+#指定C++编译器, 如g++ 编译器
+CXX := g++
+
+#CXXFLAGS C++语言编译器参数,编译时使用。
+CXXFLAGS := -fPIC -c -g -W -Wall
+
+#CXXPP,C++ 预编译器的名称，默认值为 $(CC) -E。
+#CXXPP :=
+
+#CXXPPFLAGS , C++ 预编译的选项。
+#CXXPPFLAGS :=
+
+#########################################################################################
+#	四、指定额外搜索的头文件路径、库文件路径 、引入的库
+#########################################################################################
+#指定搜索路径, 也可用include指定具体文件路径,编译时使用
+INCLUDES := -I../common \
+    -I../common/common \
+	-I../common/interface \
+	-I../common/net \
+	-I../common/test \
+	-I../common/script \
+	-I../common/timer \
+	-I../common/server \
+	-I../common/config \
+	-I../3rd/libevent/include \
+	-I../3rd/protobuf/include \
+	-I../3rd/lua-5.3.4/src \
+	-I../3rd/json/include \
+	-I../etc/msg/proto_cpp \
+	-I../etc/const/cpp \
+	-I../battle \
+	-I../battle/msg \
+	-I../battle/player \
+	-I../battle/room \
+	-I../battle/service \
+	-I../battle/battle \
+	-I../battle/battle/bullet \
+	-I../battle/battle/common \
+	-I../battle/battle/entity \
+	-I../battle/battle/grid \
+	-I../battle/math \
+
+
+#指定函数库搜索路径DIRECTORY 搜寻库文件(*.a)的路径,加入需要的库搜索路径 功能同–l，由用户指定库的路径，否则编译器将只在标准库的目录找。
+#定义安装目录
+#BIN := ../bin
+#LIB := ../lib
+#LIBDIRS := -L$(BIN)
+BIN := ../bin
+LIB := ../lib
+LIBDIRS := -L$(BIN)
