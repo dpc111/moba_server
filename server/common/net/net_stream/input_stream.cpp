@@ -1,24 +1,21 @@
 #include <string.h>
 #include <stdlib.h>
 #include <typeinfo>
-#include "chunk.h"
-#include "tcp_connection.h"
 #include "net_pool.h"
 #include "log.h"
 
-net_input_stream_t::net_input_stream_t(tcp_connection_t *conn) 
-	: conn_(conn)
-	, size_(0) {
+tcp_input_stream_t::tcp_input_stream_t() 
+	: size_(0) {
 	buff_.clear();
 	ERROR("%d", buff_.size());
 }
 
-net_input_stream_t::~net_input_stream_t() {
+tcp_input_stream_t::~tcp_input_stream_t() {
 	reset();
 	buff_.clear();
 }
 
-int net_input_stream_t::read(void *buff, int size) {
+int tcp_input_stream_t::read(void *buff, int size) {
 	char *ptr = (char *)buff;
 	for (input_queue_t::iterator it = buff_.begin(); it != buff_.end(); ++it) {
 		input_chunk_t *chunk = *it;
@@ -48,52 +45,7 @@ int net_input_stream_t::read(void *buff, int size) {
 	return ptr - (char *)buff;
 }
 
-int net_input_stream_t::read_fd(void *ud, int fd) {
-	tcp_connection_t *conn = (tcp_connection_t *)ud;
-	input_queue_t& read_fd_buff = assign_read_fd_buff();
-	iovec vecs[NUM_READ_IOVEC];
-	int i = 0;
-	for (input_queue_t::iterator it = read_fd_buff.begin(); it != read_fd_buff.end(); it++) {
-		input_chunk_t *chunk = *it;
-		vecs[i].iov_base = chunk->write_ptr();
-		vecs[i].iov_len = chunk->write_size();
-		i++;
-		if (i == NUM_READ_IOVEC) {
-			break;
-		}
-	}
-	int n = ::readv(fd, vecs, i);
-	// ERROR("%d", n);
-	if (n <= 0) {
-		WARN("read fd error");
-		reset();
-		// conn->del_event_read();
-		return n;
-	}
-	int read_size = n;
-	while (read_size > 0) {
-		if (read_fd_buff.empty()) {
-			return -1;
-		}
-		input_chunk_t *chunk = read_fd_buff.front();
-		read_fd_buff.pop_front();
-		// LOG("%d", buff_.size());
-		assert(chunk);
-		buff_.push_back(chunk);
-		if (read_size < chunk->total_size()) {
-			chunk->write_offset_ += read_size;
-			read_size = 0;
-			break;
-		} else {
-			chunk->write_offset_ += chunk->total_size();
-			read_size -= chunk->total_size();
-		}
-	}
-	size_ += n;
-	return n;
-}
-
-bool net_input_stream_t::next(const void **data, int *size) {
+bool tcp_input_stream_t::next(const void **data, int *size) {
 	if (size_ == 0) {
 		return false;
 	}
@@ -110,7 +62,7 @@ bool net_input_stream_t::next(const void **data, int *size) {
 	return false;
 }
 
-void net_input_stream_t::backup(int num) {
+void tcp_input_stream_t::backup(int num) {
 	if (num == 0) {
 		return;
 	}	
@@ -131,7 +83,7 @@ void net_input_stream_t::backup(int num) {
 	}
 }
 
-void net_input_stream_t::finish() {
+void tcp_input_stream_t::finish() {
 	for (input_queue_t::iterator it = buff_.begin(); it != buff_.end();) {
 		input_chunk_t *chunk = *it;
 		if (chunk->read_offset_ == chunk->write_offset_) {
@@ -154,7 +106,7 @@ void net_input_stream_t::finish() {
 	}
 }
 
-int net_input_stream_t::skip(int num) {
+int tcp_input_stream_t::skip(int num) {
 	if (size_ <= 0) {
 		return 0;
 	}
@@ -175,7 +127,7 @@ int net_input_stream_t::skip(int num) {
 	return backup - num;
 }
 
-void net_input_stream_t::reset() {
+void tcp_input_stream_t::reset() {
 	ERROR("reset");
 	while (buff_.size() > 0) {
 		input_chunk_t *chunk = buff_.front();

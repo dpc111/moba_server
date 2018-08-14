@@ -9,7 +9,6 @@ class tcp_connection_t;
 template <int size>
 struct chunk_t {
 	chunk_t() {
-		conn_ = NULL;
 		read_offset_ = 0;
 		write_offset_ = 0;
 	}
@@ -38,8 +37,6 @@ struct chunk_t {
 	int total_size() {
 		return size;
 	}
-
-	tcp_connection_t *conn_;
 
 	char buff_[size];
 

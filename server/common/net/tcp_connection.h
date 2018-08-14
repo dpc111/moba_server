@@ -4,8 +4,8 @@
 #include <event2/event.h>
 #include <event2/event_struct.h>
 #include "net_address.h"
-#include "net_input_stream.h"
-#include "net_output_stream.h"
+#include "tcp_input_stream.h"
+#include "tcp_output_stream.h"
 #include "log.h"
 
 #define CNT_STATE_CONNECTING 		1
@@ -30,9 +30,9 @@ public:
 
 	tcp_network_t* get_network() { return network_; }
 
-	net_output_stream_t& get_output_stream() { return output_stream_; }
+	tcp_output_stream_t& get_output_stream() { return output_stream_; }
 
-	net_input_stream_t& get_input_stream() { return input_stream_; }
+	tcp_input_stream_t& get_input_stream() { return input_stream_; }
 
 	void set_peer_addr(sockaddr_in& peer_addr) { peer_addr_ = peer_addr; }
 
@@ -71,9 +71,9 @@ public:
 private:
 	tcp_network_t *network_;
 
-	net_output_stream_t output_stream_;
+	tcp_output_stream_t output_stream_;
 
-	net_input_stream_t input_stream_;
+	tcp_input_stream_t input_stream_;
 
 	net_address_t peer_addr_;
 

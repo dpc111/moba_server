@@ -50,7 +50,7 @@ void msg_operate_t::free_message(google::protobuf::Message *msg) {
 void msg_operate_t::send(tcp_connection_t *conn, google::protobuf::Message& msg) {
 	std::string name = msg.GetDescriptor()->full_name();
 	LOG("send msg %s", name.c_str());
-	net_output_stream_t& stream = conn->get_output_stream();
+	tcp_output_stream_t& stream = conn->get_output_stream();
 	msg_header_t header;
 	header.name_len = strlen(name.c_str()) + 1;
 	header.len = msg.ByteSize();
@@ -69,7 +69,7 @@ void msg_operate_t::send(tcp_connection_t *conn, google::protobuf::Message& msg)
 }
 
  void msg_operate_t::send_func(tcp_connection_t *conn, const char *funcname, const char *fmt, va_list vlist, int len) {
-	net_output_stream_t& stream = conn->get_output_stream();
+	tcp_output_stream_t& stream = conn->get_output_stream();
 	msg_header_t header;
 	header.len = len;
 	header.name_len = strlen(funcname) + 1;
@@ -106,7 +106,7 @@ void msg_operate_t::send(tcp_connection_t *conn, google::protobuf::Message& msg)
 }
 
 bool msg_operate_t::on_message(tcp_connection_t *conn) {
-	net_input_stream_t& stream = conn->get_input_stream();
+	tcp_input_stream_t& stream = conn->get_input_stream();
 	tcp_network_t *network = conn->get_network();
 	while (true) {
 		int walk = 0;

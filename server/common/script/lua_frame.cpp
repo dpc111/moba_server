@@ -3,7 +3,7 @@
 #include "log.h"
 #include "type.h"
 #include "tcp_connection.h"
-#include "net_input_stream.h"
+#include "tcp_input_stream.h"
 #include "msg_dispatch.h"
 #include "tcp_network.h"
 #include "server.h"
@@ -179,7 +179,7 @@ int lua_frame_t::run_func(const char *funcname, int nargs, int nres, int errfunc
 
 bool lua_frame_t::on_script_func(tcp_connection_t *conn, const char *name) {
 	int top = lua_gettop(lua_state_);
-	net_input_stream_t& stream = conn->get_input_stream();
+	tcp_input_stream_t& stream = conn->get_input_stream();
 	ERROR("%s", name);
 	lua_getglobal(lua_state_, name);
 	if (lua_isnil(lua_state_, 1)) {

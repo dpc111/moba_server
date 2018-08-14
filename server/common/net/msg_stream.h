@@ -1,10 +1,10 @@
 #include "google/protobuf/io/zero_copy_stream.h"
-#include "net_input_stream.h"
-#include "net_output_stream.h"
+#include "tcp_input_stream.h"
+#include "tcp_output_stream.h"
 
 class msg_input_stream_t : public google::protobuf::io::ZeroCopyInputStream {
 public:
-	msg_input_stream_t(net_input_stream_t& stream, int size)
+	msg_input_stream_t(tcp_input_stream_t& stream, int size)
 		: stream_(stream)
 		, size_(size)
 		, offset_(0) {
@@ -44,14 +44,14 @@ public:
 	}
 
 private:
-	net_input_stream_t& stream_;
+	tcp_input_stream_t& stream_;
 	int size_;
 	int offset_;
 };
 
 class msg_output_stream_t : public google::protobuf::io::ZeroCopyOutputStream {
 public:
-	msg_output_stream_t(net_output_stream_t& stream)
+	msg_output_stream_t(tcp_output_stream_t& stream)
 		: stream_(stream)
 		, offset_(0) {
 	}
@@ -77,7 +77,7 @@ public:
 	}
 
 private:
-	net_output_stream_t& stream_;
+	tcp_output_stream_t& stream_;
 	
 	int offset_;
 };
