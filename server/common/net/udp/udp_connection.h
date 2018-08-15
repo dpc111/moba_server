@@ -6,24 +6,36 @@ extern "c" {
 	#include "rudp.h"	
 }
 
+class udp_network_t;
+
 class udp_connection_t 
 {
 public:
-	udp_connection_t(sockaddr_in& addr);
+	udp_connection_t(udp_network_t *network, sockaddr_in& addr);
 
 	~udp_connection_t();
 
+	udp_network_t* get_network() { return network_; }
+
 	struct rudp* get_rudp() { return rudp_; }
 
-	int64 get_id() { return id_; }
+	net_address_t& get_addr() { return peer_addr_; }
 
-	int rudp_recv(char buffer[MAX_PACKAGE]) { return rudp_recv(rudp_, buffer); }
+	int64 get_id() { return id_; }
 
 	void rudp_send(const char *buffer, int sz) { return rudp_send(rudp_, buffer, sz)}
 	
 	struct rudp_package* rudp_update(const void * buffer, int sz, int tick) { return rudp_update(rudp_, buffer, sz, tick); }
 
+	void rudp_recv() { input_stream_.read_rudp(); }
+
+	void net_recv(const void *buff, int size, int tick);
+
+	bool net_send();
+
 private:
+	udp_network_t *network_;
+
 	struct rudp *rudp_;
 
 	struct rudp_package send_list;

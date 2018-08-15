@@ -21,4 +21,7 @@ void rudp_send(struct rudp *U, const char *buffer, int sz);
 // return the package should be send out.
 struct rudp_package * rudp_update(struct rudp *U, const void * buffer, int sz, int tick);
 
+// add by dpc
+int rudp_check_new_data(struct rudp *U);
+
 #endif

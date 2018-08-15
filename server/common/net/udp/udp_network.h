@@ -6,6 +6,7 @@
 #include "udp_connection.h"
 #include <map>
 
+#define UDP_RECV_BUFF_SIZE 10240
 #define UDP_ADDR_ID(addr, id) \
 memcpy(id, &(addr->sin_port), sizeof(addr->sin_port)); \
 memcpy(id + sizeof(int), &(addr->in_addr), sizeof(addr->sin_addr));
@@ -24,6 +25,8 @@ public:
 	void remove_connection(int64 id);
 
 	udp_connection_t* get_connection(int64 id);
+
+	int get_fd() { return fd_; }
 
 	void start(const char *ip, int port);
 
@@ -45,7 +48,9 @@ private:
 
 	single_select_t *single_select_;
 
-	char recv_buff_[MAX_PACKAGE];
+	char recv_buff_[UDP_RECV_BUFF_SIZE];
+
+	int tick_;
 };
 
 #endif

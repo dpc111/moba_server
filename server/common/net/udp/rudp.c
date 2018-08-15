@@ -523,3 +523,22 @@ rudp_update(struct rudp *U, const void * buffer, int sz, int tick) {
 		return NULL;
 	}
 }
+
+
+
+////////////////////
+int
+rudp_check_new_data(struct rudp *U) {
+	if (U->corrupt) {
+		U->corrupt = 0;
+		return -1;
+	}
+	struct message *tmp = u->recv_queue.head;
+	if (!tmp) {
+		return 0;
+	}
+	if (tmp->id != U->recv_id_min) {
+		return 0;
+	}
+	return tmp->sz;
+}

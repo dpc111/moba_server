@@ -4,6 +4,7 @@ udp_network_t::udp_network_t()  {
 	single_select_ = new single_select_t(0);
 	fd_ = 0;
 	conn_num_ = 0;
+	tick_ = 0;
 }
 
 udp_network_t::~udp_network_t() {
@@ -63,10 +64,10 @@ void udp_network_t::process() {
 		return;
 	}
 	if (single_select_->read_check()) {
-
+		read();
 	}
 	if (single_select_->write_check()) {
-
+		write();
 	}
 }
 
@@ -75,16 +76,30 @@ void udp_network_t::read() {
 	socklen_t peerlen;
 	int n;
 	while (1) {
-		int n = recvfrom(fd_, recv_buff_, MAX_PACKAGE, 0, (struct socketaddr *)&peeraddr, &peerlen);
+		n = recvfrom(fd_, recv_buff_, UDP_RECV_BUFF_SIZE, 0, (struct socketaddr *)&peeraddr, &peerlen);
 		if (n > 0) {
 			int64 id; 
 			UDP_ADDR_ID(&peeraddr, &id);
-			conn()
+			udp_connection_t *conn = get_connection(id);
+			if (!conn) {
+				continue;
+			}
+			conn->net_recv(recv_buff_, n, tick_);
+			conn->rudp_recv();
 		} else if (n == 0){
 			return;
 		} else {
 			ERROR("udp recv err");
 			return;
+		}
+	}
+}
+
+void udp_network_t::write() {
+	for (conn_map_t::iterator it = conns_.begin(); it != conns_.end(); it++) {
+		udp_connection_t *conn = it->second;
+		if (!conn->net_send()) {
+			break;
 		}
 	}
 }
